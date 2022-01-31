@@ -24,8 +24,8 @@ JOIN department
 ON roles.department_id = department.id;
 
 -- View all employees
-SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id,
-roles.department_id, roles.title, roles.salary, department.name 
+SELECT employee.id, employee.first_name, employee.last_name,
+roles.department_id, roles.title, roles.salary, department.name, employee.manager_id 
 FROM employee
 JOIN roles
     ON employee.id = roles.id

@@ -23,7 +23,7 @@ const viewDept = () => {
         `
         SELECT * FROM department;
         `, function (err, results) {
-            // console.log(results);
+            console.table(results);
     }); 
 };
    
@@ -45,15 +45,16 @@ const viewRoles = () => {
 const viewEmp = () =>{
     db.query(
         `
+        USE db;
         SELECT employee.id, employee.first_name, employee.last_name,
         roles.department_id, roles.title, roles.salary, department.name, employee.manager_id 
         FROM employee
         JOIN roles
             ON employee.id = roles.id
         JOIN  department
-            ON employee.id = department.id;
+            ON employee.id = department.id;        
         `, function (err, results) {
-            // console.log(results);
+            console.log(results);
     });
 };
 
@@ -76,13 +77,16 @@ const promptUser = () => {
             message: 'What would you like to pick?'
         }
     ]).then((answers) => {
-        switch(answers) {
+        console.log(answers);
+        switch(answers.view) {
             case 'View all employees':
-                viewEmp();
+                viewDept();
                 break;
-            case 'Add a department':
+            case 'View all departments':
                 default:
-                promptUser();
+                console.log('view employee does not work');
+                // viewDept();
+                promptUser();  
         }
     })
 }; 
@@ -94,5 +98,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-    // console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

@@ -17,7 +17,7 @@ CREATE TABLE roles (
     REFERENCES department(id) 
     ON DELETE SET NULL
 );
-
+ 
 DROP TABLE employee;
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

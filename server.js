@@ -120,7 +120,7 @@ const addDept = () => {
 
 // Add a role
 const addRole = () => {
-    console.log('Succesfully calls addRole');
+    // console.log('Succesfully calls addRole');
     return inquirer.prompt([
         {
         type: 'input',
@@ -132,17 +132,17 @@ const addRole = () => {
         name: 'salary',
         message: 'What is salary for the new role?'
         },
-        {
-        type: 'number',
-        name: 'dept',
-        message: 'Which department does this role belong to?'
-        },
+        // {
+        // type: 'input',
+        // name: 'dept',
+        // message: 'Which department does this role belong to?'
+        // },
     ]).then((answers) => {
-        console.log(answers.title)
+        console.log(answers)
         db.promise().query(            
             `
-            INSERT INTO roles (title)
-            VALUES ("${answers.title}");      
+            INSERT INTO roles (id, department_id, title, salary)
+            VALUES (001, 001, "Mechanical Engineer", 70000),  
             `).then( ([rows, fields]) => {
               viewRoles();
             })

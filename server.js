@@ -116,7 +116,7 @@ const addDept = () => {
         })
         .catch(console.log)
     })
-}
+};
 
 // Add a role
 const addRole = () => {
@@ -148,7 +148,44 @@ const addRole = () => {
             })
             .catch(console.log)
     })
-}
+};
+
+// Add an employee
+const addEmp = () => {
+    // console.log('Succesfully calls addEmp');
+    return inquirer.prompt([
+        {
+        type: 'input',
+        name: 'fn',
+        message: 'What is the new employee\'s first name?'
+        },
+        {
+        type: 'input',
+        name: 'ln',
+        message: 'What is the new employee\'s last name?'
+        },
+        {
+        type: 'input',
+        name: 'role',
+        message: 'What is the employee\'s role?'
+        },
+        {
+        type: 'input',
+        name: 'manager',
+        message: 'Who is the manager of this employee?'
+        }
+    ]).then((answers) => {
+        console.log(answers)
+        db.promise().query(            
+            `
+            INSERT INTO roles (first_name, last_name, role_id, manager_id)
+            VALUES ("${answers.fn}", ${answers.ln}, ${answers.role}, ${answers.manager});
+            `).then( ([rows, fields]) => {
+              viewEmp();
+            })
+            .catch(console.log)
+    })
+};
 
 // Init prompt
 const promptUser = () => {
@@ -184,6 +221,9 @@ const promptUser = () => {
                 break;
             case 'Add role':
                 addRole();
+                break;
+            case 'Add employee':
+                addEmp();
                 break;
             case 'Update employee role':
                 updateEmp();

@@ -38,7 +38,7 @@ const viewDept = () => {
 const viewRoles = () => {
     db.query(
         `
-        SELECT department.id, roles.title, roles.salary
+        SELECT roles.id, roles.title, roles.salary, roles.department_id
         FROM roles
         JOIN department 
         ON roles.department_id = department.id;
@@ -132,17 +132,17 @@ const addRole = () => {
         name: 'salary',
         message: 'What is salary for the new role?'
         },
-        // {
-        // type: 'input',
-        // name: 'dept',
-        // message: 'Which department does this role belong to?'
-        // },
+        {
+        type: 'number',
+        name: 'dept',
+        message: 'Which department does this role belong to?'
+        }
     ]).then((answers) => {
         console.log(answers)
         db.promise().query(            
             `
-            INSERT INTO roles (id, department_id, title, salary)
-            VALUES (001, 001, "Mechanical Engineer", 70000),  
+            INSERT INTO roles (department_id, title, salary)
+            VALUES (001, "${answers.title}", ${answers.salary});
             `).then( ([rows, fields]) => {
               viewRoles();
             })
@@ -205,7 +205,7 @@ app.listen(PORT, () => {
 
 
 
-// // get the client
+// get the client
 // const mysql = require('mysql2');
 // // create the connection-
 // const con = mysql.createConnection(-

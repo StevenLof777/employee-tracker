@@ -1,10 +1,13 @@
+DROP DATABASE db;
+
 CREATE DATABASE db;
 
 USE db;
 
+DROP department;
 CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(30) NOT NULL
+  department VARCHAR(30) NOT NULL
 );
 
 DROP TABLE roles;
@@ -32,3 +35,4 @@ CREATE TABLE employee (
     REFERENCES employee(id)
     ON DELETE SET NULL
 );
+ 

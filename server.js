@@ -70,6 +70,24 @@ const viewRoles = () => {
 
 // View all employees
 // Doesn't work
+// const viewEmp = () =>{
+//     db.promise().query(`
+//     SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name, employee.manager_id
+//     FROM employee
+//     JOIN roles
+//         ON employee.id = roles.id
+//     JOIN  department
+//         ON employee.id = department.id;
+//     `)
+//   .then( ([rows,fields]) => {
+//     console.table(rows);
+//   })
+//   .catch(console.log)
+//   .then( () => promptUser());
+// };
+
+// View All employees
+// Works
 const viewEmp = () =>{
     db.promise().query("SELECT * FROM employee")
   .then( ([rows,fields]) => {
@@ -80,7 +98,6 @@ const viewEmp = () =>{
 };
 
 // Add a department
-// Keeps returning undefined
 const addDept = () => {
     console.log('Succesfully calls addDept');
     return inquirer.prompt([
@@ -92,7 +109,7 @@ const addDept = () => {
     ]).then((answers) => {
         db.promise().query(            
         `
-        INSERT INTO department (name)
+        INSERT INTO department (department)
         VALUES ("${answers.deptName}")      
         `).then( ([rows, fields]) => {
           viewDept();
@@ -107,13 +124,8 @@ const addRole = () => {
     return inquirer.prompt([
         {
         type: 'input',
-        name: 'role',
+        name: 'title',
         message: 'What is the new role?'
-        },
-        {
-        type: 'input',
-        name: 'role',
-        message: 'What is salary for the new role?'
         },
         {
         type: 'number',
@@ -126,20 +138,11 @@ const addRole = () => {
         message: 'Which department does this role belong to?'
         },
     ]).then((answers) => {
-        // db.query(
-        //     `
-        //     INSERT INTO department (name)
-        //     VALUES ("${answers.role}");
-
-        //     SELECT * FROM department;       
-        //     `, function (err, results) {
-        //         console.table(results);
-        //         promptUser();
-        // });
+        console.log(answers.title)
         db.promise().query(            
             `
-            INSERT INTO department (name)
-            VALUES ("${answers.role}");      
+            INSERT INTO roles (title)
+            VALUES ("${answers.title}");      
             `).then( ([rows, fields]) => {
               viewRoles();
             })
@@ -147,7 +150,7 @@ const addRole = () => {
     })
 }
 
-// When I click the down arrow then it asks the user the question again 
+// Init prompt
 const promptUser = () => {
     return inquirer.prompt([
         {
@@ -204,13 +207,13 @@ app.listen(PORT, () => {
 
 // // get the client
 // const mysql = require('mysql2');
-// // create the connection
-// const con = mysql.createConnection(
-//   {host:'localhost', user: 'root', database: 'test'}
-// );
-// db.promise().query("SELECT 1")
-//   .then( ([rows,fields]) => {
-//     console.log(rows);
-//   })
-//   .catch(console.log)
-//   .then( () => con.end());
+// // create the connection-
+// const con = mysql.createConnection(-
+//   {host:'localhost', user: 'root', database: 'test'}-
+// );-
+// db.promise().query("SELECT 1")-
+//   .then( ([rows,fields]) => {-
+//     console.log(rows);-
+//   })-
+//   .catch(console.log)-
+//   .then( () => con.end());-

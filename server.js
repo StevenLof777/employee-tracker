@@ -38,7 +38,7 @@ const viewDept = () => {
 const viewRoles = () => {
     db.query(
         `
-        SELECT department.id, roles.title, roles.salary
+        SELECT roles.id, roles.title, roles.salary, roles.department_id
         FROM roles
         JOIN department 
         ON roles.department_id = department.id;
@@ -116,11 +116,11 @@ const addDept = () => {
         })
         .catch(console.log)
     })
-}
+};
 
 // Add a role
 const addRole = () => {
-    console.log('Succesfully calls addRole');
+    // console.log('Succesfully calls addRole');
     return inquirer.prompt([
         {
         type: 'input',
@@ -136,19 +136,107 @@ const addRole = () => {
         type: 'number',
         name: 'dept',
         message: 'Which department does this role belong to?'
-        },
+        }
     ]).then((answers) => {
-        console.log(answers.title)
+        console.log(answers)
         db.promise().query(            
             `
-            INSERT INTO roles (title)
-            VALUES ("${answers.title}");      
+            INSERT INTO roles (department_id, title, salary)
+            VALUES ("${answers.dept}", "${answers.title}", ${answers.salary});
             `).then( ([rows, fields]) => {
               viewRoles();
             })
             .catch(console.log)
     })
-}
+};
+
+// Add an employee
+const addEmp = () => {
+    // console.log('Succesfully calls addEmp');
+    return inquirer.prompt([
+        {
+        type: 'input',
+        name: 'fn',
+        message: 'What is the new employee\'s first name?'
+        },
+        {
+        type: 'input',
+        name: 'ln',
+        message: 'What is the new employee\'s last name?'
+        },
+        {
+        type: 'number',
+        name: 'role',
+        message: 'What is the employee\'s role?'
+        },
+        {
+        type: 'number',
+        name: 'manager',
+        message: 'Who is the manager of this employee?'
+        }
+    ]).then((answers) => {
+        console.log(answers)
+        db.promise().query(            
+            `
+            INSERT INTO roles (first_name, last_name, role_id, manager_id)
+            VALUES ("${answers.fn}", ${answers.ln}, ${answers.role}, ${answers.manager});
+            `).then( ([rows, fields]) => {
+              viewEmp();
+            })
+            .catch(console.log)
+    })
+};
+
+// Update an employee's role
+const updateEmp = () => {
+    db.promise().query(
+        "SELECT * FROM employee"
+    ).then( ([rows,fields]) => {
+        console.log(rows);
+        let names = []
+        return inquirer.prompt([
+            {
+            type: 'list',
+            choices: () => {
+                rows.forEach((employee)=>{
+                    names.push(`${employee.first_name} ${employee.last_name}`)
+                })
+                return names;
+            },
+            name: 'employee',
+            message: "Which employees' role would you like to update?"
+            }
+        ]).then((answers) => {
+            console.log(answers.employee)
+            db.promise().query(            
+                `
+                SELECT roles.id, roles.title, roles.salary, roles.department_id
+                FROM roles
+                JOIN department 
+                ON roles.department_id = department.id;
+                `).then( ([rows, fields]) => {
+                  console.log(rows)
+                  let roles = []        
+                  return inquirer.prompt([
+                    {
+                    type: 'list',
+                    choices: () => {
+                        rows.forEach((employee)=>{
+                            names.push(`${employee.first_name} ${employee.last_name}`)
+                        })
+                        return names;
+                    },
+                    name: 'employee',
+                    message: "Which employees' role would you like to update?"
+                    }
+                ]).then((answers) => {
+                    console.log(answers)
+                }).catch(console.log)
+        })
+      })
+      .catch(console.log)
+      .then( () => promptUser());
+};
 
 // Init prompt
 const promptUser = () => {
@@ -185,6 +273,9 @@ const promptUser = () => {
             case 'Add role':
                 addRole();
                 break;
+            case 'Add employee':
+                addEmp();
+                break;
             case 'Update employee role':
                 updateEmp();
                 break;
@@ -205,7 +296,7 @@ app.listen(PORT, () => {
 
 
 
-// // get the client
+// get the client
 // const mysql = require('mysql2');
 // // create the connection-
 // const con = mysql.createConnection(-

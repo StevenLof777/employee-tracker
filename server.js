@@ -142,7 +142,7 @@ const addRole = () => {
         db.promise().query(            
             `
             INSERT INTO roles (department_id, title, salary)
-            VALUES (001, "${answers.title}", ${answers.salary});
+            VALUES ("${answers.dept}", "${answers.title}", ${answers.salary});
             `).then( ([rows, fields]) => {
               viewRoles();
             })
@@ -165,12 +165,12 @@ const addEmp = () => {
         message: 'What is the new employee\'s last name?'
         },
         {
-        type: 'input',
+        type: 'number',
         name: 'role',
         message: 'What is the employee\'s role?'
         },
         {
-        type: 'input',
+        type: 'number',
         name: 'manager',
         message: 'Who is the manager of this employee?'
         }
@@ -185,6 +185,57 @@ const addEmp = () => {
             })
             .catch(console.log)
     })
+};
+
+// Update an employee's role
+const updateEmp = () => {
+    db.promise().query(
+        "SELECT * FROM employee"
+    ).then( ([rows,fields]) => {
+        console.log(rows);
+        let names = []
+        return inquirer.prompt([
+            {
+            type: 'list',
+            choices: () => {
+                rows.forEach((employee)=>{
+                    names.push(`${employee.first_name} ${employee.last_name}`)
+                })
+                return names;
+            },
+            name: 'employee',
+            message: "Which employees' role would you like to update?"
+            }
+        ]).then((answers) => {
+            console.log(answers.employee)
+            db.promise().query(            
+                `
+                SELECT roles.id, roles.title, roles.salary, roles.department_id
+                FROM roles
+                JOIN department 
+                ON roles.department_id = department.id;
+                `).then( ([rows, fields]) => {
+                  console.log(rows)
+                  let roles = []        
+                  return inquirer.prompt([
+                    {
+                    type: 'list',
+                    choices: () => {
+                        rows.forEach((employee)=>{
+                            names.push(`${employee.first_name} ${employee.last_name}`)
+                        })
+                        return names;
+                    },
+                    name: 'employee',
+                    message: "Which employees' role would you like to update?"
+                    }
+                ]).then((answers) => {
+                    console.log(answers)
+                }).catch(console.log)
+        })
+      })
+      .catch(console.log)
+      .then( () => promptUser());
 };
 
 // Init prompt

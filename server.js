@@ -27,11 +27,9 @@ db.connect(function (err) {
 const viewDept = () => {
     db.query(
         `
-        USE db;
         SELECT * FROM department;
         `
         , function (err, results) {
-            console.log('word')
             console.table(results);
             promptUser();
     }); 
@@ -123,7 +121,6 @@ const addDept = () => {
 
 // Add a role
 const addRole = () => {
-    // console.log('Successfully calls addRole');
     return inquirer.prompt([
         {
         type: 'input',
@@ -141,7 +138,6 @@ const addRole = () => {
         message: 'Which department does this role belong to?'
         }
     ]).then((answers) => {
-        console.log(answers)
         db.promise().query(            
             `
             INSERT INTO roles (department_id, title, salary)
@@ -155,7 +151,6 @@ const addRole = () => {
 
 // Add an employee
 const addEmp = () => {
-    // console.log('Successfully calls addEmp');
     return inquirer.prompt([
         {
         type: 'input',
@@ -178,7 +173,6 @@ const addEmp = () => {
         message: 'Who is the manager of this employee?'
         }
     ]).then((answers) => {
-        console.log(answers)
         db.promise().query(            
             `
             INSERT INTO roles (first_name, last_name, role_id, manager_id)
@@ -191,11 +185,12 @@ const addEmp = () => {
 };
 
 // Update an employee's role
+// ===================================================================================
 const updateEmp = () => {
     db.promise().query(
         "SELECT * FROM employee"
     ).then( ([rows,fields]) => {
-        console.log(rows);
+        console.log('First .then')
         let names = []
         return inquirer.prompt([
             {
@@ -209,38 +204,42 @@ const updateEmp = () => {
             name: 'employee',
             message: "Which employees' role would you like to update?"
             }
-        ]).then((answers) => {
-            console.log(answers.employee)
-            db.promise().query(            
-                `
-                SELECT roles.id, roles.title, roles.salary, roles.department_id
-                FROM roles
-                JOIN department 
-                ON roles.department_id = department.id;
-                `).then( ([rows, fields]) => {
-                  console.log(rows)
-                  let roles = []        
-                  return inquirer.prompt([
-                    {
-                    type: 'list',
-                    choices: () => {
-                        rows.forEach((employee)=>{
-                            names.push(`${employee.first_name} ${employee.last_name}`)
-                        })
-                        return names;
-                    },
-                    name: 'employee',
-                    message: "Which employees' role would you like to update?"
-                    }
-                ]).then((answers) => {
-                    console.log(answers)
-                }).catch(console.log)
+        ]
+    ).then((answers) => {
+        console.log('Second .then')
+    db.promise().query(            
+        `
+        SELECT roles.id, roles.title, roles.salary, roles.department_id
+        FROM roles
+        JOIN department 
+        ON roles.department_id = department.id;
+        `
+    ).then( ([rows, fields]) => {
+        console.log('Third .then')
+        let roles = [];     
+        return inquirer.prompt([
+            {
+            type: 'list',
+            choices: () => {
+                rows.forEach((employee)=>{
+                    roles.push(`${employee.first_name} ${employee.last_name}`)
+                })
+                return roles;
+            },
+        name: 'employee',
+        message: "Which roles should this employee have?"
+        }
+        ]).then((answers) => {console.log(answers)}).catch(console.log)
         })
-      })
+    
+    })
       .catch(console.log)
       .then( () => promptUser());
-        });
-    }
+    });
+}
+// ===================================================================================
+
+
 // Init prompt
 const promptUser = () => {
     return inquirer.prompt([

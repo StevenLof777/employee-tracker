@@ -12,6 +12,7 @@ VALUES (001, 001, "Software Engineer", 70000),
  
 -- employee 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES (001, 'John', 'Wick', 002, NULL),
-       (002, 'Joe', 'Schmoe', 001, 1),
-       (003, 'Emily', 'Simile', 003, 2);
+VALUES ('John', 'Wick', 002, NULL),
+       ('Joe', 'Schmoe', 001, 1),
+       ('Emily', 'Simile', 003, 2);
+ 

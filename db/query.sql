@@ -1,7 +1,7 @@
 SELECT *
 FROM roles
 JOIN department ON roles.department = department.id;
-
+ 
 -- remember process exit(0)
 
 -- View all departments
@@ -18,7 +18,7 @@ ON roles.department_id = department.id;
 -- View all employees
 
 USE db;
-SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name, employee.manager_id
+SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, employee.manager_id
 FROM employee
 JOIN roles
     ON employee.id = roles.id

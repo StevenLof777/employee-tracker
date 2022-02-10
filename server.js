@@ -2,7 +2,7 @@ const express = require('express');
 const { type } = require('express/lib/response');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 6420;
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -15,7 +15,7 @@ const db = mysql.createConnection(
     password: 'CODE',
     database: 'db'
   },
-//   console.log(`Connected to the database.`)
+  console.log(`Connected to the database.`)
 );
 
 db.connect(function (err) {
@@ -27,8 +27,11 @@ db.connect(function (err) {
 const viewDept = () => {
     db.query(
         `
+        USE db;
         SELECT * FROM department;
-        `, function (err, results) {
+        `
+        , function (err, results) {
+            console.log('word')
             console.table(results);
             promptUser();
     }); 
@@ -99,7 +102,7 @@ const viewEmp = () =>{
 
 // Add a department
 const addDept = () => {
-    console.log('Succesfully calls addDept');
+    console.log('Successfully calls addDept');
     return inquirer.prompt([
         {
         type: 'input',
@@ -120,7 +123,7 @@ const addDept = () => {
 
 // Add a role
 const addRole = () => {
-    // console.log('Succesfully calls addRole');
+    // console.log('Successfully calls addRole');
     return inquirer.prompt([
         {
         type: 'input',
@@ -152,7 +155,7 @@ const addRole = () => {
 
 // Add an employee
 const addEmp = () => {
-    // console.log('Succesfully calls addEmp');
+    // console.log('Successfully calls addEmp');
     return inquirer.prompt([
         {
         type: 'input',
@@ -236,8 +239,8 @@ const updateEmp = () => {
       })
       .catch(console.log)
       .then( () => promptUser());
-};
-
+        });
+    }
 // Init prompt
 const promptUser = () => {
     return inquirer.prompt([
@@ -256,7 +259,9 @@ const promptUser = () => {
             name: 'view',
             message: 'What would you like to do?'
         }
+        // don't call it
     ]).then((answers) => {
+        console.log(answers)
         switch(answers.view) {
             case 'View all departments':
                 viewDept();
@@ -280,7 +285,7 @@ const promptUser = () => {
                 updateEmp();
                 break;
             default:
-                console.log('default')
+                console.log('No')
         }
     })
 }; 
@@ -307,4 +312,4 @@ app.listen(PORT, () => {
 //     console.log(rows);-
 //   })-
 //   .catch(console.log)-
-//   .then( () => con.end());-
+//   .then( () => con.end());

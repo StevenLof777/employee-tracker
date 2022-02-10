@@ -2,7 +2,7 @@ const express = require('express');
 const { type } = require('express/lib/response');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 6420;
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -15,7 +15,7 @@ const db = mysql.createConnection(
     password: 'CODE',
     database: 'db'
   },
-//   console.log(`Connected to the database.`)
+  console.log(`Connected to the database.`)
 );
 
 db.connect(function (err) {
@@ -28,7 +28,8 @@ const viewDept = () => {
     db.query(
         `
         SELECT * FROM department;
-        `, function (err, results) {
+        `
+        , function (err, results) {
             console.table(results);
             promptUser();
     }); 
@@ -99,7 +100,7 @@ const viewEmp = () =>{
 
 // Add a department
 const addDept = () => {
-    console.log('Succesfully calls addDept');
+    console.log('Successfully calls addDept');
     return inquirer.prompt([
         {
         type: 'input',
@@ -120,7 +121,6 @@ const addDept = () => {
 
 // Add a role
 const addRole = () => {
-    // console.log('Succesfully calls addRole');
     return inquirer.prompt([
         {
         type: 'input',
@@ -138,7 +138,6 @@ const addRole = () => {
         message: 'Which department does this role belong to?'
         }
     ]).then((answers) => {
-        console.log(answers)
         db.promise().query(            
             `
             INSERT INTO roles (department_id, title, salary)
@@ -152,7 +151,6 @@ const addRole = () => {
 
 // Add an employee
 const addEmp = () => {
-    // console.log('Succesfully calls addEmp');
     return inquirer.prompt([
         {
         type: 'input',
@@ -167,7 +165,7 @@ const addEmp = () => {
         {
         type: 'number',
         name: 'role',
-        message: 'What is the employee\'s role?'
+        message: 'What is the employee\'s role_id?'
         },
         {
         type: 'number',
@@ -175,11 +173,12 @@ const addEmp = () => {
         message: 'Who is the manager of this employee?'
         }
     ]).then((answers) => {
-        console.log(answers)
-        db.promise().query(            
+        console.log(answers)  
+        db.promise().query(   
+                   
             `
-            INSERT INTO roles (first_name, last_name, role_id, manager_id)
-            VALUES ("${answers.fn}", ${answers.ln}, ${answers.role}, ${answers.manager});
+            INSERT INTO employee (first_name, last_name, role_id, manager_id)
+            VALUES ("${answers.fn}", "${answers.ln}", ${answers.role}, ${answers.manager});
             `).then( ([rows, fields]) => {
               viewEmp();
             })
@@ -188,11 +187,11 @@ const addEmp = () => {
 };
 
 // Update an employee's role
+// ===================================================================================
 const updateEmp = () => {
     db.promise().query(
         "SELECT * FROM employee"
     ).then( ([rows,fields]) => {
-        console.log(rows);
         let names = []
         return inquirer.prompt([
             {
@@ -206,37 +205,44 @@ const updateEmp = () => {
             name: 'employee',
             message: "Which employees' role would you like to update?"
             }
-        ]).then((answers) => {
-            console.log(answers.employee)
-            db.promise().query(            
-                `
-                SELECT roles.id, roles.title, roles.salary, roles.department_id
-                FROM roles
-                JOIN department 
-                ON roles.department_id = department.id;
-                `).then( ([rows, fields]) => {
-                  console.log(rows)
-                  let roles = []        
-                  return inquirer.prompt([
-                    {
-                    type: 'list',
-                    choices: () => {
-                        rows.forEach((employee)=>{
-                            names.push(`${employee.first_name} ${employee.last_name}`)
-                        })
-                        return names;
-                    },
-                    name: 'employee',
-                    message: "Which employees' role would you like to update?"
-                    }
-                ]).then((answers) => {
-                    console.log(answers)
-                }).catch(console.log)
-        })
-      })
+        ]
+    ).then((answers) => {
+        let nameOfEmpForRole = answers.employee
+        // Something is wrong with this promise
+    db.promise().query(            
+        `
+        SELECT roles.id, roles.title, roles.salary, roles.department_id
+        FROM roles
+        JOIN department 
+        ON roles.department_id = department.id;
+        `
+    ).then( ([rows, fields]) => {
+        // console.log(roles);
+        let rolesArr = [];     
+        return inquirer.prompt([
+            {
+            type: 'list',
+            choices: () => {
+                rows.forEach((roles)=>{
+                    rolesArr.push(`${roles.title}`)
+                })
+                return rolesArr;
+            },
+        name: 'employee',
+        message: "Which roles should this employee have?"
+        }
+    ]).then((answers) => {
+        
+
+        console.log(answers)}).catch(console.log)
+    })
+    
+    })
       .catch(console.log)
-      .then( () => promptUser());
-};
+    //   .then( () => promptUser());
+    });
+}
+// ===================================================================================
 
 // Init prompt
 const promptUser = () => {
@@ -256,7 +262,9 @@ const promptUser = () => {
             name: 'view',
             message: 'What would you like to do?'
         }
+        // don't call it
     ]).then((answers) => {
+        console.log(answers)
         switch(answers.view) {
             case 'View all departments':
                 viewDept();
@@ -280,7 +288,7 @@ const promptUser = () => {
                 updateEmp();
                 break;
             default:
-                console.log('default')
+                console.log('No')
         }
     })
 }; 
@@ -307,4 +315,4 @@ app.listen(PORT, () => {
 //     console.log(rows);-
 //   })-
 //   .catch(console.log)-
-//   .then( () => con.end());-
+//   .then( () => con.end());

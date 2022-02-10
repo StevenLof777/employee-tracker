@@ -175,8 +175,8 @@ const addEmp = () => {
     ]).then((answers) => {
         db.promise().query(            
             `
-            INSERT INTO employee (first_name, last_name, role_id, manager_id)
-            VALUES ("${answers.fn}", ${answers.ln}, ${answers.role}, ${answers.manager});
+            INSERT INTO employee (first_name, last_name, role_id, manager_id
+            VALUES ("${answers.fn}", "${answers.ln}", ${answers.role}, ${answers.manager});
             `).then( ([rows, fields]) => {
               viewEmp();
             })
@@ -207,6 +207,8 @@ const updateEmp = () => {
         ]
     ).then((answers) => {
         console.log('Second .then')
+        let nameOfEmpForRole = answers.employee
+        // Something is wrong with this promise
     db.promise().query(            
         `
         SELECT roles.id, roles.title, roles.salary, roles.department_id
@@ -216,29 +218,26 @@ const updateEmp = () => {
         `
     ).then( ([rows, fields]) => {
         console.log('Third .then');
-
-        console.log(roles);
-        
-        
-        let roles = [];     
+        // console.log(roles);
+        let rolesArr = [];     
         return inquirer.prompt([
             {
             type: 'list',
             choices: () => {
-                rows.forEach((employee)=>{
-                    roles.push(`${employee.first_name} ${employee.last_name}`)
+                rows.forEach((roles)=>{
+                    rolesArr.push(`${roles.title}`)
                 })
-                return roles;
+                return rolesArr;
             },
         name: 'employee',
         message: "Which roles should this employee have?"
         }
         ]).then((answers) => {console.log(answers)}).catch(console.log)
-        })
+    })
     
     })
       .catch(console.log)
-      .then( () => promptUser());
+    //   .then( () => promptUser());
     });
 }
 // ===================================================================================

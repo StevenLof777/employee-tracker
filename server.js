@@ -165,7 +165,7 @@ const addEmp = () => {
         {
         type: 'number',
         name: 'role',
-        message: 'What is the employee\'s role?'
+        message: 'What is the employee\'s role_id?'
         },
         {
         type: 'number',
@@ -173,9 +173,11 @@ const addEmp = () => {
         message: 'Who is the manager of this employee?'
         }
     ]).then((answers) => {
-        db.promise().query(            
+        console.log(answers)  
+        db.promise().query(   
+                   
             `
-            INSERT INTO employee (first_name, last_name, role_id, manager_id
+            INSERT INTO employee (first_name, last_name, role_id, manager_id)
             VALUES ("${answers.fn}", "${answers.ln}", ${answers.role}, ${answers.manager});
             `).then( ([rows, fields]) => {
               viewEmp();
@@ -190,7 +192,6 @@ const updateEmp = () => {
     db.promise().query(
         "SELECT * FROM employee"
     ).then( ([rows,fields]) => {
-        console.log('First .then')
         let names = []
         return inquirer.prompt([
             {
@@ -206,7 +207,6 @@ const updateEmp = () => {
             }
         ]
     ).then((answers) => {
-        console.log('Second .then')
         let nameOfEmpForRole = answers.employee
         // Something is wrong with this promise
     db.promise().query(            
@@ -217,7 +217,6 @@ const updateEmp = () => {
         ON roles.department_id = department.id;
         `
     ).then( ([rows, fields]) => {
-        console.log('Third .then');
         // console.log(roles);
         let rolesArr = [];     
         return inquirer.prompt([
@@ -232,7 +231,10 @@ const updateEmp = () => {
         name: 'employee',
         message: "Which roles should this employee have?"
         }
-        ]).then((answers) => {console.log(answers)}).catch(console.log)
+    ]).then((answers) => {
+        
+
+        console.log(answers)}).catch(console.log)
     })
     
     })
@@ -241,7 +243,6 @@ const updateEmp = () => {
     });
 }
 // ===================================================================================
-
 
 // Init prompt
 const promptUser = () => {

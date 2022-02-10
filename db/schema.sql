@@ -36,3 +36,10 @@ CREATE TABLE employee (
     ON DELETE SET NULL
 );
  
+UPDATE [LOW_PRIORITY] [IGNORE] employee 
+SET 
+    column_name1 = expr1,
+    column_name2 = expr2,
+[WHERE
+    condition]; 
+ 

@@ -175,7 +175,7 @@ const addEmp = () => {
     ]).then((answers) => {
         db.promise().query(            
             `
-            INSERT INTO roles (first_name, last_name, role_id, manager_id)
+            INSERT INTO employee (first_name, last_name, role_id, manager_id)
             VALUES ("${answers.fn}", ${answers.ln}, ${answers.role}, ${answers.manager});
             `).then( ([rows, fields]) => {
               viewEmp();
@@ -215,7 +215,11 @@ const updateEmp = () => {
         ON roles.department_id = department.id;
         `
     ).then( ([rows, fields]) => {
-        console.log('Third .then')
+        console.log('Third .then');
+
+        console.log(roles);
+        
+        
         let roles = [];     
         return inquirer.prompt([
             {

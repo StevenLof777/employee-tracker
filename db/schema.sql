@@ -36,10 +36,9 @@ CREATE TABLE employee (
     ON DELETE SET NULL
 );
  
-UPDATE [LOW_PRIORITY] [IGNORE] employee 
+UPDATE employee 
 SET 
-    column_name1 = expr1,
-    column_name2 = expr2,
-[WHERE
-    condition]; 
- 
+    role_id = 1
+WHERE
+    last_name = "Wick"; 
+  

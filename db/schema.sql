@@ -35,10 +35,4 @@ CREATE TABLE employee (
     REFERENCES employee(id)
     ON DELETE SET NULL
 );
- 
-UPDATE employee 
-SET 
-    role_id = 1
-WHERE
-    last_name = "Wick"; 
-  
+

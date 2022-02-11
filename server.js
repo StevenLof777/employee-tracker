@@ -286,7 +286,6 @@ const promptUser = () => {
                 'Add role',
                 'Add employee',
                 'Update employee role',
-                'Quit'
             ],
             name: 'view',
             message: 'What would you like to do?'

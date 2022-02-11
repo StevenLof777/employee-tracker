@@ -90,7 +90,16 @@ const viewRoles = () => {
 // View All employees
 // Works
 const viewEmp = () =>{
-    db.promise().query("SELECT * FROM employee")
+    db.promise().query(
+    `
+        SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, employee.manager_id
+    FROM employee
+    JOIN roles
+        ON employee.role_id = roles.id
+    JOIN  department
+        ON employee.id = department.id;
+    `
+    )
   .then( ([rows,fields]) => {
     console.table(rows);
   })
@@ -135,7 +144,7 @@ const addRole = () => {
         {
         type: 'number',
         name: 'dept',
-        message: 'Which department does this role belong to?'
+        message: 'Which department_id does this role belong to?'
         }
     ]).then((answers) => {
         db.promise().query(            
@@ -207,34 +216,54 @@ const updateEmp = () => {
             }
         ]
     ).then((answers) => {
-        let nameOfEmpForRole = answers.employee
-        // Something is wrong with this promise
     db.promise().query(            
         `
-        SELECT roles.id, roles.title, roles.salary, roles.department_id
-        FROM roles
-        JOIN department 
-        ON roles.department_id = department.id;
+        SELECT employee.id, employee.first_name, employee.last_name
+        FROM employee
+        JOIN roles
+            ON employee.role_id = roles.id
+        JOIN  department
+            ON employee.id = department.id;
         `
     ).then( ([rows, fields]) => {
-        // console.log(roles);
+        // Last Name
+        let ln = answers.employee.split(' ')[1];
+        
         let rolesArr = [];     
         return inquirer.prompt([
             {
-            type: 'list',
-            choices: () => {
-                rows.forEach((roles)=>{
-                    rolesArr.push(`${roles.title}`)
-                })
-                return rolesArr;
-            },
-        name: 'employee',
-        message: "Which roles should this employee have?"
-        }
+             type: 'list',
+             name: 'role_id',
+             choices: () => {
+                 rows.forEach((roles) => {
+                     rolesArr.push(`${roles.id}`)
+                 })
+                 return rolesArr
+             }  
+            //  Grab role title 
+        //     type: 'list',
+        //     choices: () => {
+        //         rows.forEach((roles)=>{
+        //             rolesArr.push(`${roles.title}`)
+        //         })
+        //         return rolesArr;
+        //     },
+        // name: 'role_id',
+        // message: "What role_id should this employee have?"
+        },
     ]).then((answers) => {
-        
+        console.log(answers)
+        db.promise().query(
+           `
+           UPDATE employee 
+            SET 
+                role_id = ${answers.role_id}
+            WHERE
+                last_name = "${ln}"; 
+           ` 
+        ).then(viewEmp());    
 
-        console.log(answers)}).catch(console.log)
+    }).catch(console.log)
     })
     
     })
@@ -262,9 +291,7 @@ const promptUser = () => {
             name: 'view',
             message: 'What would you like to do?'
         }
-        // don't call it
     ]).then((answers) => {
-        console.log(answers)
         switch(answers.view) {
             case 'View all departments':
                 viewDept();
@@ -288,7 +315,7 @@ const promptUser = () => {
                 updateEmp();
                 break;
             default:
-                console.log('No')
+                return
         }
     })
 }; 
@@ -300,9 +327,6 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-
-
 
 // get the client
 // const mysql = require('mysql2');

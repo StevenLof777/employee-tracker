@@ -50,45 +50,7 @@ const viewRoles = () => {
          
 }
 
-// View all employees
-// Doesn't work
-// const viewEmp = () =>{
-//     db.query(
-//         `
-//         USE db;
-//         SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name, employee.manager_id
-//         FROM employee
-//         JOIN roles
-//             ON employee.id = roles.id
-//         JOIN  department
-//             ON employee.id = department.id;               
-//         `, function (err, results) {
-//             console.table(results);
-//             promptUser();
-        
-//     });
-// };
-
-// View all employees
-// Doesn't work
-// const viewEmp = () =>{
-//     db.promise().query(`
-//     SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name, employee.manager_id
-//     FROM employee
-//     JOIN roles
-//         ON employee.id = roles.id
-//     JOIN  department
-//         ON employee.id = department.id;
-//     `)
-//   .then( ([rows,fields]) => {
-//     console.table(rows);
-//   })
-//   .catch(console.log)
-//   .then( () => promptUser());
-// };
-
 // View All employees
-// Works
 const viewEmp = () =>{
     db.promise().query(
     `
@@ -196,7 +158,6 @@ const addEmp = () => {
 };
 
 // Update an employee's role
-// ===================================================================================
 const updateEmp = () => {
     db.promise().query(
         "SELECT * FROM employee"
@@ -271,7 +232,6 @@ const updateEmp = () => {
     //   .then( () => promptUser());
     });
 }
-// ===================================================================================
 
 // Init prompt
 const promptUser = () => {
@@ -326,16 +286,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-// get the client
-// const mysql = require('mysql2');
-// // create the connection-
-// const con = mysql.createConnection(-
-//   {host:'localhost', user: 'root', database: 'test'}-
-// );-
-// db.promise().query("SELECT 1")-
-//   .then( ([rows,fields]) => {-
-//     console.log(rows);-
-//   })-
-//   .catch(console.log)-
-//   .then( () => con.end());

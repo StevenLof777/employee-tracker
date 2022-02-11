@@ -20,7 +20,7 @@ The following image shows an example of the application being used from the comm
 ![A png that shows the command-line employee management.](./images/employee-tracker.PNG)
 
 ## Walk-through
-
+[video](https://watch.screencastify.com/v/Kbh59MS5F5d0sO0TtbAv)
 
 ## Tools used
 
@@ -30,3 +30,4 @@ The following image shows an example of the application being used from the comm
 * Inquirer
 
 ## GitHub
+[Repo](https://github.com/StevenLof777/employee-tracker)

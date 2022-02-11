@@ -71,7 +71,7 @@ const viewEmp = () =>{
 
 // Add a department
 const addDept = () => {
-    console.log('Successfully calls addDept');
+    // console.log('Successfully calls addDept');
     return inquirer.prompt([
         {
         type: 'input',
@@ -144,7 +144,7 @@ const addEmp = () => {
         message: 'Who is the manager of this employee?'
         }
     ]).then((answers) => {
-        console.log(answers)  
+        // console.log(answers)  
         db.promise().query(   
                    
             `
